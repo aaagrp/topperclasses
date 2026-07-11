@@ -1,0 +1,6 @@
+{
+  "name": "Topper's Classes",
+  "description": "Premium educational institute website for Topper's Classes, Rustampur, Gorakhpur. Best coaching for class 1 to 10 with interactive learning, animations, and notice boards.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
