@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Clock3, Search } from 'lucide-react';
 
-type ArticleCategory = 'Education' | 'Exams & Results' | 'Student Life' | 'Institute Updates';
+type ArticleCategory = 'Education' | 'Exams & Results' | 'Student Life' | 'Parent Guide' | 'Institute Updates';
 
 type Article = {
   slug: string;
