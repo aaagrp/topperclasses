@@ -44,6 +44,7 @@ export default function Header({
     { name: 'Activities', id: 'activities' },
     { name: 'Notices', id: 'notices' },
     { name: 'Gallery', id: 'gallery' },
+    { name: 'Articles', id: 'articles' },
   ];
 
   return (
