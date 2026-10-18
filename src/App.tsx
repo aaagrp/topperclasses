@@ -16,6 +16,7 @@ import AdmissionModal from './components/AdmissionModal';
 import AdminPanel from './components/AdminPanel';
 import FloatingActions from './components/FloatingActions';
 import LucideIcon from './components/LucideIcon';
+import { ArticlesPage, ArticleDetailPage } from './components/Articles';
 import {
   AboutPage,
   WhyUsPage,
@@ -215,6 +216,18 @@ export default function App() {
 
               {/* Media / Gallery Carousel Grid */}
               <Gallery items={galleryItems} />
+
+              {/* News-style articles preview */}
+              <section className="border-t border-black/5 bg-slate-50 px-4 py-12 dark:border-white/5 dark:bg-white/[0.01] md:px-6 md:py-16">
+                <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-5 md:flex-row md:items-end">
+                  <div>
+                    <span className="text-xs font-black uppercase tracking-[0.2em] text-[#D4AF37]">The learning journal</span>
+                    <h2 className="mt-2 font-display text-3xl font-black text-[#071B3A] dark:text-white">Articles & Updates</h2>
+                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">Study tips, exam preparation ideas, and useful updates for students and parents.</p>
+                  </div>
+                  <button onClick={() => setActivePage('articles')} className="btn-gold inline-flex items-center gap-2 px-5 py-3 text-sm">Explore all articles <LucideIcon name="ArrowRight" size={15} /></button>
+                </div>
+              </section>
             </motion.div>
           )}
 
@@ -244,6 +257,18 @@ export default function App() {
 
           {activePage === 'gallery' && (
             <GalleryPage galleryItems={galleryItems} />
+          )}
+
+          {activePage === 'articles' && (
+            <ArticlesPage onOpenArticle={(slug) => setActivePage(`article:${slug}`)} />
+          )}
+
+          {activePage.startsWith('article:') && (
+            <ArticleDetailPage
+              slug={activePage.slice('article:'.length)}
+              onBack={() => setActivePage('articles')}
+              onOpenArticle={(slug) => setActivePage(`article:${slug}`)}
+            />
           )}
         </AnimatePresence>
       </main>
