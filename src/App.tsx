@@ -4,10 +4,10 @@ import { Menu, X, ArrowUpRight, Play, Mic2, Ticket, Users, Instagram, Youtube, M
 import './index.css';
 
 const links = {
-  home:'/', ep1:'/ep1', apply:'/apply/performer', guest:'/apply/guest', sponsor:'/apply/sponsor',
-  sponsors:'/sponsors', founder:'/founder', hindi:'/hindi', tour:'/ggl_talent_trip',
-  tourTerms:'/ggl_talent_trip/terms-and-conditions', tourPolicy:'/ggl_talent_trip/policy',
-  ticketPolicy:'/ticket-policy', verify:'/verifyticket', book:'https://in.bookmyshow.com/events/gorakhpurs-got-latent/ET00522955',
+  home:'https://www.gkpgotlatent.in/', ep1:'https://www.gkpgotlatent.in/ep1', apply:'https://www.gkpgotlatent.in/apply/performer', guest:'https://www.gkpgotlatent.in/apply/guest', sponsor:'https://www.gkpgotlatent.in/apply/sponsor',
+  sponsors:'https://www.gkpgotlatent.in/sponsors', founder:'https://www.gkpgotlatent.in/founder', hindi:'https://www.gkpgotlatent.in/hindi', tour:'https://www.gkpgotlatent.in/ggl_talent_trip',
+  tourTerms:'https://www.gkpgotlatent.in/ggl_talent_trip/terms-and-conditions', tourPolicy:'https://www.gkpgotlatent.in/ggl_talent_trip/policy',
+  ticketPolicy:'https://www.gkpgotlatent.in/ticket-policy', verify:'https://www.gkpgotlatent.in/verifyticket', book:'https://in.bookmyshow.com/events/gorakhpurs-got-latent/ET00522955',
   trailer:'https://youtu.be/aJfdcrsqoCQ', instagram:'https://www.instagram.com/gkp_got_latent/',
   youtube:'https://www.youtube.com/@GkpGotLatent', whatsapp:'https://wa.me/918423858424',
   channel:'https://whatsapp.com/channel/0029Vb91ZX43bbUzFYcP220S', x:'https://x.com/gkpgotlatent'
