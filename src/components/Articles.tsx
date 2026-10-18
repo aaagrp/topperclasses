@@ -77,9 +77,41 @@ const ARTICLES: Article[] = [
       'We aim to keep articles clear and practical so families can quickly find the information they need.'
     ]
   }
+  {
+    slug: 'a-simple-weekly-revision-plan-for-classes-6-to-10',
+    title: 'A Simple Weekly Revision Plan for Classes 6–10',
+    excerpt: 'Turn a long syllabus into manageable weekly goals with practice, revision, and time to ask questions.',
+    category: 'Exams & Results',
+    date: 'October 18, 2026',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1453738773917-9c3eff1db985?auto=format&fit=crop&w=1200&q=85',
+    paragraphs: [
+      'A useful revision plan starts with the topics your teacher has covered and the dates of your upcoming tests. Write these down first, then choose a few specific topics to revisit each week instead of trying to revise every subject at once.',
+      'After studying a topic, close your book and explain the main idea in your own words. Solve practice questions, check your answers, and keep a short list of mistakes or doubts to review. This makes your next revision session more focused.',
+      'Keep one lighter session each week for older chapters and unfinished questions. If a plan becomes too crowded, reduce the number of tasks and prioritise the most important gaps. A realistic plan you can repeat is more useful than a perfect timetable you cannot maintain.',
+      'Ask a teacher or parent for help when you are stuck. Revision should help you identify what to learn next, not make you feel that you must understand everything on your own.'
+    ],
+    bullets: ['Choose weekly goals for each subject.', 'Practise questions without looking at the solution first.', 'Review mistakes and doubts in a separate notebook.', 'Leave time for sleep, breaks, and unfinished topics.']
+  },
+  {
+    slug: 'how-parents-can-support-learning-at-home',
+    title: 'How Parents Can Support Learning at Home',
+    excerpt: 'Small, steady routines can help families encourage learning without turning every evening into a test.',
+    category: 'Parent Guide',
+    date: 'October 18, 2026',
+    readTime: '3 min read',
+    image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=85',
+    paragraphs: [
+      'A supportive home learning routine does not need to be complicated. Agree on a regular time and a comfortable place for homework, and help your child break larger assignments into smaller steps.',
+      'Ask open questions such as “What did you learn today?” or “Which part would you like to practise again?” These conversations can help children describe what they understand and where they need support.',
+      'Notice effort, curiosity, and improvement—not only marks. If a topic is difficult, encourage your child to ask their teacher for an explanation instead of hiding the confusion or rushing through the work.',
+      'Keep communication with teachers practical and respectful. Sharing patterns you notice at home can help adults work together on a routine that suits the student.'
+    ],
+    bullets: ['Create a calm, regular homework routine.', 'Ask your child to explain concepts in their own words.', 'Praise consistent effort and asking for help.', 'Contact the teacher when a difficulty keeps recurring.']
+  }
 ];
 
-const CATEGORIES = ['All articles', 'Education', 'Exams & Results', 'Student Life', 'Institute Updates'] as const;
+const CATEGORIES = ['All articles', 'Education', 'Exams & Results', 'Student Life', 'Parent Guide', 'Institute Updates'] as const;
 
 function formatDate(date: string) {
   return date;
@@ -114,7 +146,8 @@ export function ArticlesPage({ onOpenArticle }: { onOpenArticle: (slug: string) 
   const filteredArticles = useMemo(() => ARTICLES.filter((article) => {
     const matchesCategory = category === 'All articles' || article.category === category;
     const term = search.trim().toLowerCase();
-    const matchesSearch = !term || `${article.title} ${article.excerpt} ${article.category}`.toLowerCase().includes(term);
+    const searchableText = `${article.title} ${article.excerpt} ${article.category} ${article.paragraphs.join(' ')} ${(article.bullets ?? []).join(' ')}`.toLowerCase();
+    const matchesSearch = !term || searchableText.includes(term);
     return matchesCategory && matchesSearch && !(article.slug === featured.slug && category === 'All articles' && !search.trim());
   }), [category, search, featured.slug]);
 
@@ -172,12 +205,13 @@ export function ArticlesPage({ onOpenArticle }: { onOpenArticle: (slug: string) 
   );
 }
 
-export function ArticleDetailPage({ slug, onBack, onOpenArticle }: { slug: string; onBack: () => void; onOpenArticle: (slug: string) => void }) {
+export function ArticleDetailPage({ slug, onBack, onOpenArticle, onOpenAdmission }: { slug: string; onBack: () => void; onOpenArticle: (slug: string) => void; onOpenAdmission: () => void }) {
   const article = ARTICLES.find((item) => item.slug === slug);
   if (!article) {
     return <section className="min-h-[60vh] px-4 py-20 text-center"><h1 className="font-display text-3xl font-bold text-[#071B3A] dark:text-white">Article not found</h1><p className="mt-3 text-slate-600 dark:text-slate-300">This article may have moved or the link may be incorrect.</p><button type="button" onClick={onBack} className="btn-gold mt-6 gap-2 px-5 py-3 text-sm"><ArrowLeft size={16} /> All articles</button></section>;
   }
-  const related = ARTICLES.filter((item) => item.slug !== article.slug && item.category === article.category).slice(0, 2);
+  const sameCategory = ARTICLES.filter((item) => item.slug !== article.slug && item.category === article.category);
+  const related = [...sameCategory, ...ARTICLES.filter((item) => item.slug !== article.slug && item.category !== article.category)].slice(0, 2);
 
   return (
     <article className="min-h-[70vh] bg-white px-4 py-8 md:px-6 md:py-12 dark:bg-[#041024]">
@@ -191,6 +225,13 @@ export function ArticleDetailPage({ slug, onBack, onOpenArticle }: { slug: strin
           <div className="space-y-6 text-base leading-8 text-slate-700 dark:text-slate-200">{article.paragraphs.map((paragraph, index) => <p key={index}>{paragraph}</p>)}</div>
           {article.bullets && <div className="my-8 rounded-2xl border border-amber-500/20 bg-amber-50 p-6 dark:bg-amber-500/5"><h2 className="font-display text-xl font-bold text-[#071B3A] dark:text-white">Quick takeaways</h2><ul className="mt-4 list-disc space-y-2 pl-5 text-sm leading-7 text-slate-700 dark:text-slate-200">{article.bullets.map((bullet) => <li key={bullet}>{bullet}</li>)}</ul></div>}
           <div className="mt-10 border-t border-slate-200 pt-6 dark:border-white/10"><p className="text-xs font-bold uppercase tracking-widest text-amber-700 dark:text-[#D4AF37]">From Topper’s Classes</p><p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">Helpful learning information for students and families in Gorakhpur.</p></div>
+        </div>
+        <div className="mt-8 rounded-2xl bg-[#071B3A] p-6 text-white md:flex md:items-center md:justify-between md:gap-6">
+          <div>
+            <h2 className="font-display text-xl font-bold">Need help planning your next step?</h2>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">Contact Topper’s Classes to ask about classes, subjects, and admission details.</p>
+          </div>
+          <button type="button" onClick={onOpenAdmission} className="btn-gold mt-4 shrink-0 gap-2 px-5 py-3 text-sm md:mt-0">Ask about admission <ArrowRight size={15} /></button>
         </div>
         {related.length > 0 && <section className="border-t border-slate-200 pt-8 dark:border-white/10"><h2 className="mb-5 font-display text-2xl font-bold text-[#071B3A] dark:text-white">More in {article.category}</h2><div className="grid gap-5 md:grid-cols-2">{related.map((item) => <ArticleCard key={item.slug} article={item} onOpen={onOpenArticle} />)}</div></section>}
       </div>
