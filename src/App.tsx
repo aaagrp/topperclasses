@@ -268,6 +268,7 @@ export default function App() {
               slug={activePage.slice('article:'.length)}
               onBack={() => setActivePage('articles')}
               onOpenArticle={(slug) => setActivePage(`article:${slug}`)}
+              onOpenAdmission={() => setAdmissionOpen(true)}
             />
           )}
         </AnimatePresence>
