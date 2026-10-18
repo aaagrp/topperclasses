@@ -115,7 +115,7 @@ export function ArticlesPage({ onOpenArticle }: { onOpenArticle: (slug: string) 
     const matchesCategory = category === 'All articles' || article.category === category;
     const term = search.trim().toLowerCase();
     const matchesSearch = !term || `${article.title} ${article.excerpt} ${article.category}`.toLowerCase().includes(term);
-    return matchesCategory && matchesSearch && article.slug !== featured.slug;
+    return matchesCategory && matchesSearch && !(article.slug === featured.slug && category === 'All articles' && !search.trim());
   }), [category, search, featured.slug]);
 
   return (
