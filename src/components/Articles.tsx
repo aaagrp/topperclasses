@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, CalendarDays, Clock3, Search } from 'lucide-react';
 
-type ArticleCategory = 'Education' | 'Exams & Results' | 'Student Life' | 'Parent Guide' | 'Institute Updates';
+type ArticleCategory = 'Education' | 'Exams & Results' | 'Student Life' | 'Parent Guide' | 'Institute Updates' | 'Community & Entertainment';
 
 type Article = {
   slug: string;
@@ -17,6 +17,28 @@ type Article = {
 };
 
 const ARTICLES: Article[] = [
+  {
+    slug: 'what-is-gorakhpurs-got-latent',
+    title: 'What Is Gorakhpur’s Got Latent? A Talent Platform for Purvanchal',
+    excerpt: 'An introduction to GGL, a regional entertainment initiative focused on giving performers and creative people a place to showcase their talent.',
+    category: 'Community & Entertainment',
+    date: 'October 18, 2026',
+    readTime: '4 min read',
+    image: 'https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=1400&q=85',
+    paragraphs: [
+      'Gorakhpur’s Got Latent, also known as GGL, is presented as a talent and entertainment platform focused on Gorakhpur and the wider Purvanchal region. Its central idea is simple: create opportunities for people to share original performances and creative ideas with an audience.',
+      'The platform’s stated focus includes live-show episodes, performer showcases, creator collaborations, interviews, video content and community stories. Performance categories may include comedy, singing, dance, acting, mimicry, beatboxing and other original acts, depending on the show’s current selection criteria.',
+      'For aspiring performers, an audition process can be a way to introduce their act and learn about the next steps. Anyone interested should read the current official application instructions carefully and follow only verified announcements. Applying does not guarantee selection, a prize or participation in a particular episode.',
+      'GGL also describes opportunities for guests, sponsors and creative partners to contribute to its activities. Event dates, venues, ticket availability, fees and participant details can change, so readers should confirm these details through GGL’s official channels before making plans or payments.',
+      'At its heart, the idea behind Gorakhpur’s Got Latent is to celebrate originality and build connections among performers, creators and audiences in the region. As the platform develops, its official announcements and published episode information are the best places to check for confirmed updates.'
+    ],
+    bullets: [
+      'GGL stands for Gorakhpur’s Got Latent.',
+      'The platform focuses on talent and entertainment in Gorakhpur and the wider Purvanchal region.',
+      'Audition, ticket and event details should be checked against current official announcements.',
+      'Selection and participation are not guaranteed simply by submitting an application.'
+    ]
+  },
   {
     slug: 'build-a-strong-study-routine',
     title: 'How to Build a Strong Daily Study Routine',
@@ -111,7 +133,7 @@ const ARTICLES: Article[] = [
   }
 ];
 
-const CATEGORIES = ['All articles', 'Education', 'Exams & Results', 'Student Life', 'Parent Guide', 'Institute Updates'] as const;
+const CATEGORIES = ['All articles', 'Education', 'Exams & Results', 'Student Life', 'Parent Guide', 'Institute Updates', 'Community & Entertainment'] as const;
 
 function formatDate(date: string) {
   return date;
