@@ -76,7 +76,7 @@ const ARTICLES: Article[] = [
       'Check back for study guidance, exam preparation ideas, student-development topics, and institute announcements. For time-sensitive notices or admission questions, please continue to use the existing contact and notice options on the website.',
       'We aim to keep articles clear and practical so families can quickly find the information they need.'
     ]
-  }
+  },
   {
     slug: 'a-simple-weekly-revision-plan-for-classes-6-to-10',
     title: 'A Simple Weekly Revision Plan for Classes 6–10',
