@@ -1,314 +1,66 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import About from './components/About';
-import DirectorProfile from './components/DirectorProfile';
-import Stats from './components/Stats';
-import WhyChooseUs from './components/WhyChooseUs';
-import Academics from './components/Academics';
-import Activities from './components/Activities';
-import NoticeBoard from './components/NoticeBoard';
-import Gallery from './components/Gallery';
-import Testimonials from './components/Testimonials';
-import Footer from './components/Footer';
-import AdmissionModal from './components/AdmissionModal';
-import AdminPanel from './components/AdminPanel';
-import FloatingActions from './components/FloatingActions';
-import LucideIcon from './components/LucideIcon';
-import { ArticlesPage, ArticleDetailPage } from './components/Articles';
-import {
-  AboutPage,
-  WhyUsPage,
-  CoursesPage,
-  TimingsPage,
-  ActivitiesPage,
-  NoticesPage,
-  GalleryPage
-} from './components/FullPages';
+import React, { useMemo, useState } from 'react';
+import { motion } from 'motion/react';
+import { Menu, X, ArrowUpRight, Play, Mic2, Ticket, Users, Instagram, Youtube, MessageCircle, Search, CalendarDays, ChevronRight, Copy, Send, ExternalLink, Sparkles, ShieldCheck } from 'lucide-react';
+import './index.css';
 
-import {
-  DEFAULT_COURSES,
-  DEFAULT_SUBJECTS,
-  DEFAULT_BATCH_TIMINGS,
-  DEFAULT_CHOOSE_US,
-  DEFAULT_ACTIVITIES,
-  DEFAULT_GALLERY,
-  DEFAULT_ACHIEVEMENTS,
-  getNotices,
-  saveNotices,
-  getSettings,
-  saveSettings,
-  getGalleryItems,
-  saveGalleryItems
-} from './data';
-import { Notice, SiteSettings, GalleryItem } from './types';
-
-export default function App() {
-  const [notices, setNotices] = useState<Notice[]>([]);
-  const [settings, setSettings] = useState<SiteSettings | null>(null);
-  const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
-  const [activePage, setActivePage] = useState<string>('home');
-  
-  // Modals & Panel States
-  const [admissionOpen, setAdmissionOpen] = useState(false);
-  const [adminOpen, setAdminOpen] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  // Scroll to top when activePage changes
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [activePage]);
-
-  // Load notices and settings from LocalStorage or Defaults on mount
-  useEffect(() => {
-    setNotices(getNotices());
-    setSettings(getSettings());
-    setGalleryItems(getGalleryItems());
-
-    // Restore admin session if available
-    const adminSession = localStorage.getItem('toppers_admin_active_v1');
-    if (adminSession === 'true') {
-      setIsAdmin(true);
-    }
-  }, []);
-
-  const handleUpdateNotices = (updatedNotices: Notice[]) => {
-    setNotices(updatedNotices);
-    saveNotices(updatedNotices);
-  };
-
-  const handleUpdateSettings = (updatedSettings: SiteSettings) => {
-    setSettings(updatedSettings);
-    saveSettings(updatedSettings);
-  };
-
-  const handleUpdateGallery = (updatedGallery: GalleryItem[]) => {
-    setGalleryItems(updatedGallery);
-    saveGalleryItems(updatedGallery);
-  };
-
-  const handleAdminLogin = () => {
-    setIsAdmin(true);
-    localStorage.setItem('toppers_admin_active_v1', 'true');
-  };
-
-  const handleAdminLogout = () => {
-    setIsAdmin(false);
-    localStorage.removeItem('toppers_admin_active_v1');
-  };
-
-  // Wait for settings to load
-  if (!settings) {
-    return (
-      <div className="min-h-screen bg-[#041024] flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-[#D4AF37]/20 border-t-[#D4AF37] rounded-full animate-spin"></div>
-        <p className="text-xs text-[#F4E8C1] mt-4 font-mono font-bold uppercase tracking-widest">
-          Initializing Topper's Classes...
-        </p>
-      </div>
-    );
-  }
-
-  // Generate dynamic stats to reflect active data
-  const dynamicAchievements = DEFAULT_ACHIEVEMENTS.map((item) => {
-    if (item.label === 'Activities Conducted') {
-      return { ...item, value: `${DEFAULT_ACTIVITIES.length} Conducted` };
-    }
-    if (item.label === 'Happy Parents') {
-      return { ...item, value: 'Growing Community' };
-    }
-    return item;
-  });
-
-  return (
-    <div className="min-h-screen bg-white dark:bg-[#041024] text-slate-800 dark:text-slate-100 font-sans selection:bg-[#D4AF37] selection:text-[#071B3A] antialiased">
-      {/* Premium Glassmorphic Header */}
-      <Header
-        settings={settings}
-        onOpenAdmission={() => setAdmissionOpen(true)}
-        onOpenAdmin={() => setAdminOpen(true)}
-        isAdmin={isAdmin}
-        onLogout={handleAdminLogout}
-        activePage={activePage}
-        onChangePage={setActivePage}
-      />
-
-      <main className="relative pt-24 md:pt-32">
-        <AnimatePresence mode="wait">
-          {activePage === 'home' && (
-            <motion.div
-              key="home"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ type: "tween", ease: "easeInOut", duration: 0.35 }}
-            >
-              {/* Hero Section */}
-              <Hero
-                settings={settings}
-                onOpenAdmission={() => setAdmissionOpen(true)}
-              />
-
-              {/* Milestone & Achievements counter section */}
-              <Stats achievements={dynamicAchievements} />
-
-              {/* Quick Explorer Teaser Block */}
-              <div className="py-12 bg-slate-50 dark:bg-white/[0.01] border-y border-black/5 dark:border-white/5 text-left">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-1 md:grid-cols-3 gap-6">
-                  {/* Card 1 */}
-                  <div className="p-6 bg-white dark:bg-[#071B3A] rounded-2xl border border-black/5 dark:border-white/10 shadow-sm space-y-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#D4AF37]">Academic Streams</span>
-                    <h3 className="font-display font-bold text-lg text-[#071B3A] dark:text-white leading-tight">Classes 1 to 10 Syllabus</h3>
-                    <p className="text-xs text-slate-500 dark:text-gray-400 font-sans">Explore full grade breakdowns, daily homework tracking, and board-exam mock test structures.</p>
-                    <button onClick={() => setActivePage('courses')} className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer">
-                      <span>View Courses & Syllabuses</span>
-                      <LucideIcon name="ArrowRight" size={12} />
-                    </button>
-                  </div>
-
-                  {/* Card 2 */}
-                  <div className="p-6 bg-white dark:bg-[#071B3A] rounded-2xl border border-black/5 dark:border-white/10 shadow-sm space-y-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#D4AF37]">Active Timetable</span>
-                    <h3 className="font-display font-bold text-lg text-[#071B3A] dark:text-white leading-tight">Batch Timings & Shifts</h3>
-                    <p className="text-xs text-slate-500 dark:text-gray-400 font-sans">Check out the morning and evening schedules, doubt solving desks, and Sunday exam timings.</p>
-                    <button onClick={() => setActivePage('timings')} className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer">
-                      <span>Explore Timing Schedule</span>
-                      <LucideIcon name="ArrowRight" size={12} />
-                    </button>
-                  </div>
-
-                  {/* Card 3 */}
-                  <div className="p-6 bg-white dark:bg-[#071B3A] rounded-2xl border border-black/5 dark:border-white/10 shadow-sm space-y-3">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-[#D4AF37]">Co-Curricular</span>
-                    <h3 className="font-display font-bold text-lg text-[#071B3A] dark:text-white leading-tight">Extra Activities Grid</h3>
-                    <p className="text-xs text-slate-500 dark:text-gray-400 font-sans">See our drawing classes, music & dance sessions, debate tournaments, and science model expos.</p>
-                    <button onClick={() => setActivePage('activities')} className="text-xs font-bold text-[#D4AF37] hover:underline flex items-center gap-1 cursor-pointer">
-                      <span>See Extra Activities</span>
-                      <LucideIcon name="ArrowRight" size={12} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* About summary block */}
-              <About settings={settings} />
-
-              {/* Director Profile & Honors */}
-              <DirectorProfile />
-
-              {/* Why Choose Us - 16 Bento cards */}
-              <WhyChooseUs items={DEFAULT_CHOOSE_US} />
-
-              {/* Classes, Subjects, and timings Dashboard Hub */}
-              <Academics
-                courses={DEFAULT_COURSES}
-                subjects={DEFAULT_SUBJECTS}
-                timings={DEFAULT_BATCH_TIMINGS}
-                timingNote="Batch timings may change according to requirements."
-              />
-
-              {/* Extra Activities Category Grid */}
-              <Activities activities={DEFAULT_ACTIVITIES} />
-
-              {/* Notice Board Feed */}
-              <NoticeBoard notices={notices} />
-
-              {/* Media / Gallery Carousel Grid */}
-              <Gallery items={galleryItems} />
-
-              {/* News-style articles preview */}
-              <section className="border-t border-black/5 bg-slate-50 px-4 py-12 dark:border-white/5 dark:bg-white/[0.01] md:px-6 md:py-16">
-                <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-5 md:flex-row md:items-end">
-                  <div>
-                    <span className="text-xs font-black uppercase tracking-[0.2em] text-[#D4AF37]">The learning journal</span>
-                    <h2 className="mt-2 font-display text-3xl font-black text-[#071B3A] dark:text-white">Articles & Updates</h2>
-                    <p className="mt-2 max-w-xl text-sm leading-6 text-slate-600 dark:text-slate-300">Study tips, exam preparation ideas, and useful updates for students and parents.</p>
-                  </div>
-                  <button onClick={() => setActivePage('articles')} className="btn-gold inline-flex items-center gap-2 px-5 py-3 text-sm">Explore all articles <LucideIcon name="ArrowRight" size={15} /></button>
-                </div>
-              </section>
-            </motion.div>
-          )}
-
-          {activePage === 'about' && (
-            <AboutPage settings={settings} onOpenAdmission={() => setAdmissionOpen(true)} />
-          )}
-
-          {activePage === 'why-us' && (
-            <WhyUsPage items={DEFAULT_CHOOSE_US} onOpenAdmission={() => setAdmissionOpen(true)} />
-          )}
-
-          {activePage === 'courses' && (
-            <CoursesPage courses={DEFAULT_COURSES} subjects={DEFAULT_SUBJECTS} onOpenAdmission={() => setAdmissionOpen(true)} />
-          )}
-
-          {activePage === 'timings' && (
-            <TimingsPage timings={DEFAULT_BATCH_TIMINGS} timingNote="Batch timings may change according to requirements." onOpenAdmission={() => setAdmissionOpen(true)} />
-          )}
-
-          {activePage === 'activities' && (
-            <ActivitiesPage activities={DEFAULT_ACTIVITIES} />
-          )}
-
-          {activePage === 'notices' && (
-            <NoticesPage notices={notices} />
-          )}
-
-          {activePage === 'gallery' && (
-            <GalleryPage galleryItems={galleryItems} />
-          )}
-
-          {activePage === 'articles' && (
-            <ArticlesPage onOpenArticle={(slug) => setActivePage(`article:${slug}`)} />
-          )}
-
-          {activePage.startsWith('article:') && (
-            <ArticleDetailPage
-              slug={activePage.slice('article:'.length)}
-              onBack={() => setActivePage('articles')}
-              onOpenArticle={(slug) => setActivePage(`article:${slug}`)}
-              onOpenAdmission={() => setAdmissionOpen(true)}
-            />
-          )}
-        </AnimatePresence>
-      </main>
-
-      {/* Parent & Student Testimonials Carousel */}
-      <Testimonials />
-
-      {/* Footer and Map Embed */}
-      <Footer
-        settings={settings}
-        onOpenAdmission={() => setAdmissionOpen(true)}
-        onOpenAdmin={() => setAdminOpen(true)}
-        isAdmin={isAdmin}
-        onLogout={handleAdminLogout}
-      />
-
-      {/* Secure Admission iframe form popups */}
-      <AdmissionModal
-        isOpen={admissionOpen}
-        onClose={() => setAdmissionOpen(false)}
-      />
-
-      {/* Dynamic real-time Admin announcement manager */}
-      <AdminPanel
-        isOpen={adminOpen}
-        onClose={() => setAdminOpen(false)}
-        notices={notices}
-        settings={settings}
-        galleryItems={galleryItems}
-        onUpdateNotices={handleUpdateNotices}
-        onUpdateSettings={handleUpdateSettings}
-        onUpdateGallery={handleUpdateGallery}
-        onLoginSuccess={handleAdminLogin}
-        isAdmin={isAdmin}
-      />
-
-      {/* Floating call / WhatsApp Hotlines */}
-      <FloatingActions settings={settings} />
-    </div>
-  );
+const links = {
+  home:'/', ep1:'/ep1', apply:'/apply/performer', guest:'/apply/guest', sponsor:'/apply/sponsor',
+  sponsors:'/sponsors', founder:'/founder', hindi:'/hindi', tour:'/ggl_talent_trip',
+  tourTerms:'/ggl_talent_trip/terms-and-conditions', tourPolicy:'/ggl_talent_trip/policy',
+  ticketPolicy:'/ticket-policy', verify:'/verifyticket', book:'https://in.bookmyshow.com/events/gorakhpurs-got-latent/ET00522955',
+  trailer:'https://youtu.be/aJfdcrsqoCQ', instagram:'https://www.instagram.com/gkp_got_latent/',
+  youtube:'https://www.youtube.com/@GkpGotLatent', whatsapp:'https://wa.me/918423858424',
+  channel:'https://whatsapp.com/channel/0029Vb91ZX43bbUzFYcP220S', x:'https://x.com/gkpgotlatent'
+};
+const articles = [
+ {slug:'what-is-gorakhpurs-got-latent',category:'About GGL',title:'What Is Gorakhpur’s Got Latent?',excerpt:'Meet the regional talent and entertainment platform celebrating creativity across Gorakhpur and Purvanchal.',date:'October 18, 2026',time:'4 min read',body:['Gorakhpur’s Got Latent (GGL) is a talent and entertainment initiative focused on giving creative people a place to introduce their performances and ideas. Its spirit is captured in the tagline: “Kuch Bhi Ho Sakta Hai!”','The platform’s broad creative interests can include comedy, singing, dance, acting, mimicry, beatboxing and other original acts, depending on the current show format and selection criteria.','People interested in participating should read the current official application instructions and follow verified announcements. Submitting an application does not guarantee selection or participation in an episode.','Event dates, venues, ticket availability, guest appearances and fees can change. Confirm details through official GGL channels before making plans or payments.']},
+ {slug:'how-to-apply-for-episode-2',category:'Episode 2',title:'How to Apply for a GGL Performer Audition',excerpt:'A practical guide to reviewing the official performer application and following the audition instructions.',date:'October 18, 2026',time:'3 min read',body:['Start by opening the official performer application and reading every field and instruction carefully. Provide accurate information about yourself and the act you want to present.','Prepare the performance clip in the format requested by the official team. If the instructions ask you to share a clip through WhatsApp, use the official contact and do not send passwords or sensitive account credentials.','The initial audition application is described as free. Any later fee or registration condition should be confirmed directly through an official GGL announcement before payment.','Shortlisting and final participation depend on the team’s selection process. Applying does not guarantee a place, prize or exposure.']},
+ {slug:'episode-1-archive',category:'Episode 1',title:'Episode 1: Explore the GGL Archive',excerpt:'A starting point for the first episode, its official trailer and published results.',date:'October 18, 2026',time:'3 min read',body:['Explore the Episode 1 archive and watch the official trailer to get a sense of the show. The archive is the place to check published results and performance information.','Names, scores, prize details and rankings should be checked against the official Episode 1 page. This article does not add unverified scorecards or claims.','Follow GGL’s official channels for updates about future episodes, performer opportunities and new video releases.']},
+ {slug:'what-is-the-ggl-talent-tour',category:'Talent Tour',title:'What Is the GGL Talent Tour?',excerpt:'The creative collaboration concept connecting performers, creators and shared projects.',date:'October 18, 2026',time:'3 min read',body:['The GGL Talent Tour is described as a creative travel and collaboration concept for performers and creators. Activities discussed may include jamming, collaborative videos, reels, performances and short-film projects.','Timing, itinerary, registration amounts, total contribution, accommodation and travel arrangements must be treated as provisional until confirmed in the latest official terms and announcements.','Read the published terms and policy carefully before registering or making any payment. Ask the official team to clarify what a registration fee covers and what additional costs may apply.']}
+];
+const nav = [
+ ['Home','home'],['About GGL','about'],['Episodes','episodes'],['Performers','performers'],['Guests','guests'],['Sponsors','sponsors'],['Talent Tour','tour'],['Articles & Stories','articles'],['Gallery','gallery'],['Contact','contact']
+];
+const pageTitles:Record<string,string> = {home:'KUCH BHI HO SAKTA HAI!',about:'A stage for original talent.',episodes:'Every act has a story.',performers:'Your talent deserves a stage.',guests:'Creators make the conversation.',sponsors:'Partner with the next big moment.',tour:'Create beyond the stage.',articles:'Stories from the GGL universe.',gallery:'Moments, performances & people.',contact:'Let’s connect.',founder:'The people behind the vision.',apply:'Take your first step.'};
+function App(){
+ const [page,setPage]=useState('home'); const [mobileOpen,setMobileOpen]=useState(false); const [search,setSearch]=useState(''); const [category,setCategory]=useState('All'); const [selected,setSelected]=useState<string|null>(null); const [copied,setCopied]=useState(false); const [email,setEmail]=useState(''); const [message,setMessage]=useState(''); const [sent,setSent]=useState(false);
+ const go=(p:string)=>{setPage(p);setSelected(null);setMobileOpen(false);window.scrollTo({top:0,behavior:'smooth'});};
+ const categories=['All',...Array.from(new Set(articles.map(a=>a.category)))];
+ const filtered=useMemo(()=>articles.filter(a=>(category==='All'||a.category===category)&& (a.title+' '+a.excerpt+' '+a.category).toLowerCase().includes(search.toLowerCase())),[category,search]);
+ const activeArticle=articles.find(a=>a.slug===selected);
+ const ext=(url:string,label:string,cls='btn btn-outline')=><a className={cls} href={url} target="_blank" rel="noreferrer">{label}<ArrowUpRight size={16}/></a>;
+ const action=(p:string,label:string,cls='btn btn-outline')=><button className={cls} onClick={()=>go(p)}>{label}<ArrowUpRight size={16}/></button>;
+ const articleCard=(a:typeof articles[number])=><article className="article-card" key={a.slug}><div className="article-art"><span className="eyebrow">{a.category}</span><Mic2 size={44}/><span className="art-mark">GGL / STORIES</span></div><div className="article-copy"><div className="meta">{a.date} <span>·</span> {a.time}</div><h3>{a.title}</h3><p>{a.excerpt}</p><button className="text-link" onClick={()=>{setSelected(a.slug);setPage('articles');window.scrollTo(0,0)}}>Read story <ArrowUpRight size={15}/></button></div></article>;
+ const section=(eyebrow:string,title:string,desc:string,children:React.ReactNode)=><section className="section"><div className="section-head"><div><span className="eyebrow">{eyebrow}</span><h2>{title}</h2><p>{desc}</p></div></div>{children}</section>;
+ const cards=(items:{n:string;t:string;d:string;p:string;label:string}[])=> <div className="feature-grid">{items.map(i=><div className="feature-card" key={i.n}><span className="feature-num">{i.n}</span><h3>{i.t}</h3><p>{i.d}</p><button className="text-link" onClick={()=>go(i.p)}>{i.label}<ArrowUpRight size={15}/></button></div>)}</div>;
+ const formSubmit=(e:React.FormEvent)=>{e.preventDefault();setSent(true);};
+ return <div className="site-shell">
+  <div className="topline"><span><span className="live-dot"/> GORAKHPUR’S TALENT & ENTERTAINMENT PLATFORM</span><span className="topline-right">ORIGINALITY • COMMUNITY • ENTERTAINMENT</span></div>
+  <header className="site-header"><button className="brand" onClick={()=>go('home')} aria-label="GGL home"><span className="brand-icon"><Mic2 size={24}/></span><span><b>GORAKHPUR’S</b><strong>GOT LATENT<span>.</span></strong><small>KUCH BHI HO SAKTA HAI!</small></span></button>
+   <nav className={mobileOpen?'nav-links open':'nav-links'}>{nav.map(([label,p])=><button key={p} className={page===p?'nav-active':''} onClick={()=>go(p)}>{label}</button>)}</nav>
+   <div className="header-actions">{ext(links.apply,'Apply Now','btn btn-red header-apply')}<button className="mobile-toggle" onClick={()=>setMobileOpen(!mobileOpen)} aria-label="Toggle menu">{mobileOpen?<X/>:<Menu/>}</button></div>
+  </header>
+  <main>
+   {page==='home'&&<><section className="hero"><div className="hero-glow"/><div className="hero-content"><span className="eyebrow"><Sparkles size={14}/> THE STAGE IS YOURS</span><h1>GORAKHPUR’S<br/><span>GOT LATENT.</span></h1><p className="hero-tag">KUCH BHI HO SAKTA HAI!</p><p className="hero-desc">A home for bold ideas, unexpected performances and the creative spirit of Gorakhpur & Purvanchal.</p><div className="hero-actions">{ext(links.apply,'Apply for Episode 2','btn btn-red')}{ext(links.book,'Book Your Ticket','btn btn-outline')}<button className="play-link" onClick={()=>window.open(links.trailer,'_blank','noopener,noreferrer')}><Play size={16} fill="currentColor"/> Watch Episode 1 trailer</button></div><div className="hero-note"><span className="live-dot"/> Follow official announcements for confirmed dates, guests and ticket updates.</div></div><div className="hero-side"><div className="mic-orbit"><div className="orbit orbit-one"/><div className="orbit orbit-two"/><div className="mic-core"><Mic2 size={94}/></div><span className="orbit-label label-top">TALENT</span><span className="orbit-label label-bottom">NO LIMITS</span></div><div className="hero-stamp">GGL<br/><b>LIVE</b><span>GORAKHPUR · UP</span></div></div><div className="hero-bottom"><span>01 / ORIGINAL TALENT</span><span>02 / LIVE ENTERTAINMENT</span><span>03 / CREATOR COMMUNITY</span></div></section>
+    {section('THE GGL IDEA','Not just a show. A platform.','A place to discover original voices, celebrate performance and bring a creative community together.',<div className="intro-grid"><div className="intro-big">Every talent has a story.<br/><span>What’s yours?</span></div><div className="intro-copy"><p>Gorakhpur’s Got Latent is built around a simple belief: creativity deserves a stage. From unexpected skills to unforgettable performances, GGL celebrates the energy of local talent.</p><button className="text-link" onClick={()=>go('about')}>Discover the GGL vision <ArrowUpRight size={15}/></button></div></div>)}
+    {section('EXPLORE THE UNIVERSE','Find your way into GGL','Whether you perform, create, collaborate or cheer from the audience, there is a way to be part of the story.',cards([{n:'01',t:'Episodes & Highlights',d:'Explore the Episode 1 archive and follow verified updates about upcoming shows.',p:'episodes',label:'Explore episodes'},{n:'02',t:'Step into the spotlight',d:'Review the official audition instructions and introduce your act to the team.',p:'performers',label:'Performer guide'},{n:'03',t:'Beyond the stage',d:'Discover the creative collaboration concept behind the GGL Talent Tour.',p:'tour',label:'Explore the tour'}]))}
+    {section('THE LATEST','Stories worth your time','Guides, updates and stories from the world of Gorakhpur’s Got Latent.',<div className="article-grid">{articles.slice(0,3).map(articleCard)}</div>)} 
+    {section('BE PART OF IT','The next story could be yours','Applications, collaborations and community updates begin with official information.',<div className="cta-band"><div><span className="eyebrow">YOUR MOVE</span><h2>Bring your kind of magic.</h2><p>Explore the official application routes and read the details before submitting.</p></div><div className="cta-actions">{ext(links.apply,'Performer application','btn btn-red')}{ext(links.guest,'Guest application','btn btn-outline')}{ext(links.sponsor,'Sponsor application','btn btn-outline')}</div></div>)}
+   </>}
+   {page!=='home'&&<section className="page-hero"><span className="eyebrow">GORAKHPUR’S GOT LATENT / {page.toUpperCase()}</span><h1>{pageTitles[page]||'Explore Gorakhpur’s Got Latent.'}</h1><p>Creativity, community and entertainment from Gorakhpur and the wider Purvanchal region.</p><div className="crumb"><button onClick={()=>go('home')}>Home</button><ChevronRight size={14}/><span>{nav.find(n=>n[1]===page)?.[0]||page}</span></div></section>}
+   {page==='about'&&section('OUR PURPOSE','A stage for original talent','GGL aims to celebrate creativity and connect performers, audiences and creators.',<div className="feature-grid">{[{n:'01',t:'Discover',d:'Create opportunities for performers to introduce their original acts.'},{n:'02',t:'Connect',d:'Bring artists, audiences, creators and collaborators together.'},{n:'03',t:'Celebrate',d:'Share stories and performances that reflect the energy of the region.'}].map(i=><div className="feature-card" key={i.n}><span className="feature-num">{i.n}</span><h3>{i.t}</h3><p>{i.d}</p></div>)}</div>)}
+   {page==='episodes'&&section('EPISODE ARCHIVE','The show, one story at a time','Check official pages for verified results and the latest event status.',<div className="episode-grid"><div className="episode-card"><div className="episode-visual"><Play size={48}/><span>EPISODE 01</span></div><div className="episode-info"><span className="eyebrow">ARCHIVE</span><h3>Episode 1</h3><p>Explore the published archive and official trailer. Confirm results on the official episode page.</p><div className="card-actions">{ext(links.ep1,'View episode archive')}{ext(links.trailer,'Watch trailer')}</div></div></div><div className="episode-card"><div className="episode-visual episode-two"><CalendarDays size={48}/><span>EPISODE 02</span></div><div className="episode-info"><span className="eyebrow">FOLLOW ANNOUNCEMENTS</span><h3>Episode 2</h3><p>Application and ticket details can change. Verify availability before making plans.</p><div className="card-actions">{ext(links.apply,'Audition info')}{ext(links.book,'BookMyShow')}</div></div></div></div>)}
+   {page==='performers'&&section('AUDITIONS','Your talent deserves a stage','Read the current official instructions before applying.',<><div className="notice-box"><ShieldCheck size={24}/><div><b>Know before you apply</b><p>The initial audition application is described as free. Any later registration fee or conditions must be confirmed through official GGL instructions. Selection is not guaranteed.</p></div></div>{cards([{n:'01',t:'Submit your application',d:'Fill the official performer form with accurate details.',p:'apply',label:'Open application'},{n:'02',t:'Prepare your clip',d:'Follow the current instructions for format and submission.',p:'apply',label:'Review instructions'},{n:'03',t:'Wait for official updates',d:'Shortlisted applicants receive next-step instructions from the team.',p:'contact',label:'Contact GGL'}])}{ext(links.apply,'Apply as performer','btn btn-red')}</>)}
+   {page==='guests'&&section('GUESTS & CREATORS','Good conversations start here','Guest applications and creator collaborations are subject to confirmation.',<><p className="body-wide">Interested in joining the GGL conversation as a guest or creator? Use the official application route. Profiles and appearances will be listed only when participation is verified.</p>{ext(links.guest,'Guest application','btn btn-red')}</>)}
+   {page==='sponsors'&&section('PARTNERSHIPS','Build something memorable together','Explore partnership opportunities without unverified reach figures or promises.',<><div className="feature-grid">{[{n:'01',t:'Brand partnerships',d:'Discuss suitable brand visibility and collaborative ideas.'},{n:'02',t:'Local businesses',d:'Explore community-focused collaborations and in-kind support.'},{n:'03',t:'Production & venues',d:'Discuss practical event, media and venue partnerships.'}].map(i=><div className="feature-card" key={i.n}><span className="feature-num">{i.n}</span><h3>{i.t}</h3><p>{i.d}</p></div>)}</div>{ext(links.sponsors,'Sponsor information')}{ext(links.sponsor,'Apply as sponsor','btn btn-red')}</>)}
+   {page==='tour'&&section('GGL TALENT TOUR','Create beyond the stage','A creative travel and collaboration concept. Dates, prices and arrangements are not confirmed here.',<><div className="tour-panel"><span className="eyebrow">CREATIVE COLLABORATION</span><h2>Make things. Meet creators. Tell stories.</h2><p>Potential activities discussed include jamming, reels, performances, creator interactions and short-film projects. All travel, accommodation, meal, safety and payment details must be verified in the latest official policy.</p><div className="card-actions">{ext('https://www.gkpgotlatent.in/ggl_talent_trip/terms-and-conditions','Read terms')}{ext('https://www.gkpgotlatent.in/ggl_talent_trip/policy','Read policy')}</div></div><div className="feature-grid">{[{n:'01',t:'Understand the plan',d:'Review the latest official itinerary and what is actually confirmed.'},{n:'02',t:'Review every cost',d:'Clarify registration fees, additional contribution and inclusions before paying.'},{n:'03',t:'Ask questions',d:'Use official contact details for eligibility, travel and safety questions.'}].map(i=><div className="feature-card" key={i.n}><span className="feature-num">{i.n}</span><h3>{i.t}</h3><p>{i.d}</p></div>)}</div>{ext(links.tour,'Open official Talent Tour page','btn btn-red')}</>)}
+   {page==='articles'&&<section className="section">{activeArticle?<div className="article-detail"><button className="text-link" onClick={()=>setSelected(null)}>← All stories</button><span className="eyebrow">{activeArticle.category}</span><h1>{activeArticle.title}</h1><p className="article-lead">{activeArticle.excerpt}</p><div className="meta">{activeArticle.date} · {activeArticle.time} · GGL Editorial</div><div className="article-body">{activeArticle.body.map((p,i)=><p key={i}>{p}</p>)}</div><div className="article-share"><button className="btn btn-outline" onClick={()=>{navigator.clipboard?.writeText(window.location.href);setCopied(true)}}><Copy size={15}/>{copied?'Link copied':'Copy link'}</button><a className="btn btn-outline" target="_blank" rel="noreferrer" href={'https://wa.me/?text='+encodeURIComponent(activeArticle.title+' '+window.location.href)}>Share on WhatsApp <ArrowUpRight size={15}/></a><a className="btn btn-outline" target="_blank" rel="noreferrer" href={'https://x.com/intent/post?text='+encodeURIComponent(activeArticle.title)+'&url='+encodeURIComponent(window.location.href)}>Share on X <ArrowUpRight size={15}/></a></div></div>:<><div className="article-tools"><label className="search-box"><Search size={18}/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search GGL stories..."/></label><div className="filter-pills">{categories.map(c=><button key={c} className={category===c?'filter-active':''} onClick={()=>setCategory(c)}>{c}</button>)}</div></div><div className="article-grid">{filtered.map(articleCard)}</div>{filtered.length===0&&<p className="empty-state">No stories match that search. Try another keyword.</p>}</>}</section>}
+   {page==='gallery'&&section('GGL MEDIA','Real moments. Real stories.','Watch official videos and follow verified media updates. This gallery uses links rather than pretending stock images are GGL event photos.',<div className="feature-grid"><a className="feature-card feature-link" href={links.trailer} target="_blank" rel="noreferrer"><Play size={34}/><h3>Episode 1 trailer</h3><p>Watch the official trailer on YouTube.</p><span className="text-link">Watch video <ExternalLink size={15}/></span></a><a className="feature-card feature-link" href={links.youtube} target="_blank" rel="noreferrer"><Youtube size={34}/><h3>Official YouTube</h3><p>Explore available official video uploads.</p><span className="text-link">Visit channel <ExternalLink size={15}/></span></a><a className="feature-card feature-link" href={links.instagram} target="_blank" rel="noreferrer"><Instagram size={34}/><h3>Instagram updates</h3><p>Follow official social announcements and media.</p><span className="text-link">Open Instagram <ExternalLink size={15}/></span></a></div>)}
+   {page==='contact'&&section('CONTACT & HELP','Tell us what you need','Use official channels for audition, ticket, sponsor and collaboration enquiries.',<><div className="contact-grid"><a href={links.whatsapp} target="_blank" rel="noreferrer" className="contact-card"><MessageCircle/><div><b>WhatsApp</b><span>+91 84238 58424</span></div><ArrowUpRight/></a><a href={links.channel} target="_blank" rel="noreferrer" className="contact-card"><Send/><div><b>WhatsApp Channel</b><span>Announcements and updates</span></div><ArrowUpRight/></a><a href={links.instagram} target="_blank" rel="noreferrer" className="contact-card"><Instagram/><div><b>Instagram</b><span>@gkp_got_latent</span></div><ArrowUpRight/></a><a href={links.youtube} target="_blank" rel="noreferrer" className="contact-card"><Youtube/><div><b>YouTube</b><span>Official video channel</span></div><ArrowUpRight/></a></div><form className="contact-form" onSubmit={formSubmit}><h3>Prepare an enquiry</h3><p>This form creates a local confirmation only; it does not send email. For a reply, contact GGL through the official WhatsApp link above.</p><label>Your email (optional)<input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/></label><label>How can we help?<textarea required value={message} onChange={e=>setMessage(e.target.value)} placeholder="Write your enquiry..."/></label><button className="btn btn-red" type="submit">Prepare enquiry <ArrowUpRight size={16}/></button>{sent&&<p className="form-note">Enquiry drafted on this page. Please send it through the official WhatsApp contact; this form does not transmit your details.</p>}</form></>)}
+   {page==='founder'&&section('PEOPLE BEHIND THE VISION','A community takes a team','Use the official founder profile for verified biography and current information.',<p className="body-wide">To avoid publishing an unverified biography, visit the existing official founder page for confirmed details.</p>)}
+   {page==='apply'&&section('GET INVOLVED','Choose your path','Open the official application that matches your interest.',<div className="feature-grid">{[{n:'01',t:'Performer',d:'Introduce your act through the official performer application.',url:links.apply},{n:'02',t:'Guest / Creator',d:'Send your interest through the official guest application.',url:links.guest},{n:'03',t:'Sponsor',d:'Explore partnership opportunities and apply.',url:links.sponsor}].map(i=><div className="feature-card" key={i.n}><span className="feature-num">{i.n}</span><h3>{i.t}</h3><p>{i.d}</p><a className="text-link" href={i.url} target="_blank" rel="noreferrer">Open application <ArrowUpRight size={15}/></a></div>)}</div>)}
+  </main>
+  <footer className="site-footer"><div className="footer-main"><div className="footer-brand"><div className="brand-icon"><Mic2 size={24}/></div><h3>GORAKHPUR’S<br/><span>GOT LATENT.</span></h3><p>Kuch Bhi Ho Sakta Hai!<br/>Gorakhpur’s Talent & Entertainment Platform.</p><div className="social-row"><a href={links.instagram} target="_blank" rel="noreferrer" aria-label="Instagram"><Instagram/></a><a href={links.youtube} target="_blank" rel="noreferrer" aria-label="YouTube"><Youtube/></a><a href={links.x} target="_blank" rel="noreferrer" aria-label="X"><ExternalLink/></a><a href={links.whatsapp} target="_blank" rel="noreferrer" aria-label="WhatsApp"><MessageCircle/></a></div></div><div><h4>EXPLORE</h4>{[['About GGL','about'],['Episodes','episodes'],['Performers','performers'],['Articles','articles'],['Gallery','gallery'],['Talent Tour','tour']].map(([l,p])=><button key={p} onClick={()=>go(p)}>{l}</button>)}</div><div><h4>GET INVOLVED</h4><a href={links.apply} target="_blank" rel="noreferrer">Apply as performer</a><a href={links.guest} target="_blank" rel="noreferrer">Guest application</a><a href={links.sponsor} target="_blank" rel="noreferrer">Sponsor application</a><a href={links.book} target="_blank" rel="noreferrer">Book a ticket</a></div><div><h4>HELP & POLICIES</h4><button onClick={()=>go('contact')}>Contact & help</button><a href={links.ticketPolicy} target="_blank" rel="noreferrer">Ticket policy</a><a href={links.verify} target="_blank" rel="noreferrer">Ticket verification</a><a href={links.tourTerms} target="_blank" rel="noreferrer">Talent Tour terms</a><a href={links.tourPolicy} target="_blank" rel="noreferrer">Talent Tour policy</a></div></div><div className="footer-bottom"><span>© {new Date().getFullYear()} Gorakhpur’s Got Latent. All rights reserved.</span><span>Built for creativity in Gorakhpur & Purvanchal.</span></div></footer>
+ </div>;
 }
-
+export default App;
